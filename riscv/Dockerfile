@@ -3,7 +3,6 @@ MAINTAINER jerryzj
 
 ENV DEBIAN_FRONTEND noninteractive
 
-
 # Update system
 RUN apt-get update
 RUN apt-get upgrade -y
@@ -30,3 +29,7 @@ RUN tar -xvzf v1.0.0.tar.gz && cd riscv-isa-sim-1.0.0 && \
 mkdir build && cd build && ../configure --prefix=/opt/riscv-toolchain && \
 make -j && make install
 RUN rm -rf v1.0.0.tar.gz riscv-isa-sim-1.0.0
+# Cleanup
+RUN apt-get autoremove -y \
+    && apt-get autoclean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
