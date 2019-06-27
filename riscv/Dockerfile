@@ -19,15 +19,15 @@ ENV PATH=$PATH:/opt/riscv-toolchain/bin
 # build riscv-pk, ISS
 # riscv-pk
 RUN git clone https://github.com/riscv/riscv-pk.git
-RUN cd riscv-pk && git checkout 97b683e && mkdir build && cd build &&\
-../configure --prefix=/opt/riscv-toolchain --host=riscv64-unknown-elf && \
-make -j && make install
+RUN cd riscv-pk && git checkout 97b683e && mkdir build && cd build && \
+    ../configure --prefix=/opt/riscv-toolchain --host=riscv64-unknown-elf && \
+    make -j && make install
 RUN rm -rf /riscv-pk
 # Spike ISS
 RUN wget https://github.com/riscv/riscv-isa-sim/archive/v1.0.0.tar.gz
 RUN tar -xvzf v1.0.0.tar.gz && cd riscv-isa-sim-1.0.0 && \
-mkdir build && cd build && ../configure --prefix=/opt/riscv-toolchain && \
-make -j && make install
+    mkdir build && cd build && ../configure --prefix=/opt/riscv-toolchain && \
+    make && make install
 RUN rm -rf v1.0.0.tar.gz riscv-isa-sim-1.0.0
 # Cleanup
 RUN apt-get autoremove -y \
