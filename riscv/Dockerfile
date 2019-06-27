@@ -8,10 +8,10 @@ RUN apt-get update
 RUN apt-get upgrade -y
 
 # install SiFive riscv toolchain
-RUN wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.2.0-2019.02.0-x86_64-linux-ubuntu14.tar.gz
-RUN tar -xvzf riscv64-unknown-elf-gcc-8.2.0-2019.02.0-x86_64-linux-ubuntu14.tar.gz
-RUN rm riscv64-unknown-elf-gcc-8.2.0-2019.02.0-x86_64-linux-ubuntu14.tar.gz
-RUN mv riscv64-unknown-elf-gcc-8.2.0-2019.02.0-x86_64-linux-ubuntu14 /opt/riscv-toolchain
+RUN wget https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14.tar.gz
+RUN tar -xvzf riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14.tar.gz
+RUN rm riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14.tar.gz
+RUN mv riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14 /opt/riscv-toolchain
 RUN echo "export PATH=$PATH:/opt/riscv-toolchain/bin" >> /root/.bashrc  
 RUN /bin/bash -c "source /root/.bashrc"
 ENV PATH=$PATH:/opt/riscv-toolchain/bin
