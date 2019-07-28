@@ -15,7 +15,7 @@ RUN tar -xvzf riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14.tar.
 RUN rm riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14.tar.gz
 RUN mv riscv64-unknown-elf-gcc-8.2.0-2019.05.3-x86_64-linux-ubuntu14 /opt/riscv-toolchain
 # Set $PATH
-sed -e 's|PATH="\(.*\)"|PATH="/opt/riscv-toolchain/bin:\1"|g' -i /etc/environment
+RUN sed -e 's|PATH="\(.*\)"|PATH="/opt/riscv-toolchain/bin:\1"|g' -i /etc/environment
 # Since docker build use sh as default, add ENV in order to build Spike later
 ENV PATH=$PATH:/opt/riscv-toolchain/bin
 
