@@ -12,7 +12,7 @@ RUN apt-get upgrade -y
 # Install missing system-tools
 RUN apt-get install software-properties-common locales -y
 # Set locales
-RUN sed -i's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
@@ -39,6 +39,6 @@ RUN apt-get install -y \
     fish
 # Cleanup
 RUN apt-get autoremove -y\
-    && apt-get autoclean
+    && apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 CMD ["/usr/bin/fish"]
