@@ -11,7 +11,7 @@ RUN apt-get upgrade -y
 # Install System C library
 RUN wget https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz && \
     tar -xvzf systemc-2.3.3.tar.gz && rm systemc-2.3.3.tar.gz
-RUN cd systemc-2.3.3 && export CXX=g++ && export CXXFLAGS="std=c++14" && \ 
+RUN cd systemc-2.3.3 && \ 
     ./configure --prefix=/opt/systemc-2.3.3 && \
     make -j && make install
 RUN rm -rf /systemc-2.3.3
