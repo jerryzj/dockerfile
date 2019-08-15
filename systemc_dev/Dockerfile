@@ -17,12 +17,13 @@ RUN cd systemc-2.3.3 && \
 RUN rm -rf /systemc-2.3.3
 
 # Install SCML library
-
-
 RUN wget --no-check-certificate \
     "https://drive.google.com/uc?export=download&id=1sRu0WRuhoXk_joiNzhcoWAnDW1HiZs_S" \
     -O scml.tgz && tar -xvzf scml.tgz && rm scml.tgz
-#RUN cd scml-2.5.0 && 
+RUN mkdir /opt/scml && mkdir /scml-2.5.0/build && cd /scml-2.5.0/build \
+    ../configure --prefix=/opt/scml --with-systemc=/opt/systemc-2.3.3 && \
+    make -j && make install 
+RUN rm -rf /scml-2.5.0
 
 # Cleanup
 RUN apt-get autoremove -y \
