@@ -7,25 +7,44 @@ ENV DEBIAN_FRONTEND noninteractive
 # Update system
 RUN apt-get update
 RUN apt-get upgrade -y
-
+RUN apt-get install -y libncurses5-dev autoconf automake perl -y
 # Install System C library
 RUN wget https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz && \
     tar -xvzf systemc-2.3.3.tar.gz && rm systemc-2.3.3.tar.gz
-RUN cd systemc-2.3.3 && \ 
-    ./configure --prefix=/opt/systemc-2.3.3 && \
+RUN cd systemc-2.3.3 && mkdir build && cd build && \ 
+    cmake .. -DCMAKE_CXX_STANDARD=14 && \
     make -j && make install
 RUN rm -rf /systemc-2.3.3
 
-# Install SCML library
-RUN wget --no-check-certificate \
-    "https://drive.google.com/uc?export=download&id=1sRu0WRuhoXk_joiNzhcoWAnDW1HiZs_S" \
-    -O scml.tgz && tar -xvzf scml.tgz && rm scml.tgz
-RUN mkdir /opt/scml && mkdir /scml-2.5.0/build && cd /scml-2.5.0/build \
-    ../configure --prefix=/opt/scml --with-systemc=/opt/systemc-2.3.3 && \
-    make -j && make install 
-RUN rm -rf /scml-2.5.0
+# Install SCML library 2.5.0 (falled)
+#RUN wget --no-check-certificate \
+#    "https://drive.google.com/uc?export=download&id=1sRu0WRuhoXk_joiNzhcoWAnDW1HiZs_S" \
+#    -O scml.tgz && tar -xvzf scml.tgz && rm scml.tgz
+#RUN mkdir /opt/scml && mkdir /scml-2.5.0/build && cd /scml-2.5.0/build \
+#    ../configure --prefix=/opt/scml --with-systemc=/opt/systemc-2.3.3 && \
+#    make -j && make install 
+#RUN rm -rf /scml-2.5.0
+
+# Install SCML library 2.4
+# Note that the configure of SCML is fixed to C++11 by default, but the C++ version
+# should be bound to SystemC, for the hardcored version API
+RUN git clone https://gitlab.larc-nthu.net/rgly/scml.git \
+    && export CXX=g++-8 \
+    && mkdir scml/build \
+    && mkdir /opt/scml \
+    && cd scml \
+    && sed -i -e 's/libsystemc\.a/libsystemc\.so/g' ./configure.in \
+    && sed -i -e 's/g++-5\.2\.0/g++-5\.2\.0 \| g++-8/g' ./configure.in \
+    && sed -i -e 's/c++11/c++14/g' ./configure.in \
+    && sed -i -e '25s/^/#include \<sstream\>/' src/scml2_base/callback_observers_owner.h \
+    && autoconf \
+    && cd build \
+    && ../configure --prefix=/opt/scml --with-systemc=/opt/systemc \
+    && make install -j16 \
+    && cd ../.. \
+    && rm -rf scml
 
 # Cleanup
-RUN apt-get autoremove -y \
-    && apt-get autoclean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/log/*
+#RUN apt-get autoremove -y \
+#    && apt-get autoclean
+#RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/log/*
