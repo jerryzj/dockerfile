@@ -17,7 +17,7 @@ RUN apt-get install -y libncurses5-dev autoconf automake perl libtool \
 RUN wget https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz && \
     tar -xvzf systemc-2.3.3.tar.gz && rm systemc-2.3.3.tar.gz
 RUN cd systemc-2.3.3 && mkdir build && cd build && \ 
-    cmake .. -DCMAKE_CXX_STANDARD=14 && make install -j
+    cmake .. -DCMAKE_CXX_STANDARD=14 && make install
 RUN rm -rf /systemc-2.3.3
 
 # Install SCML library 2.5.0 (failed)
@@ -36,16 +36,15 @@ RUN rm -rf /systemc-2.3.3
 #   1. latest g++ 8.3
 #   2. C++ 14 standard
 #   3. System C 2.3.3 built by CMake (dynamic library .so instead of static library)
+ENV CXX=g++-8
 RUN git clone https://gitlab.larc-nthu.net/rgly/scml.git \
-    && export CXX=g++-8 \
-    && mkdir scml/build \
+    && mkdir /scml/build \
     && mkdir /opt/scml
-RUN cd /scml && sh scml_patch.sh
+RUN cd /scml && sh /scml/scml_patch.sh
 RUN cd /scml/build \
     && ../configure --prefix=${SCML_HOME} --with-systemc=${SYSTEMC_HOME} \
-    && make install -j \
-    && cd / \
-    && rm -rf scml
+    && make install
+RUN rm -rf /scml
 
 # Install Arch C
 ENV PREFIX="${PREFIX:-/usr/local/lib}"
@@ -58,7 +57,7 @@ RUN mkdir -p ${ARCHC_HOME} && \
     git clone https://github.com/ArchC/ArchC.git ArchC
 RUN cd ArchC && ./autogen.sh && \
     ./configure --prefix=${ARCHC_HOME} --with-systemc=${SYSTEMC_HOME} && \
-    make install -j && cd / && rm -rf ArchC
+    make install && cd / && rm -rf ArchC
 
 # Cleanup
 RUN apt-get autoremove -y \
