@@ -1,13 +1,15 @@
 FROM jerryzj/riscv:latest
 LABEL maintainer = "jerryzj"
 
-ENV DEBIAN_FRONTEND noninteractive
+# Set environment variables
 ENV SYSTEMC_HOME=/opt/systemc
 ENV SCML_HOME=/opt/scml
+ENV LD_LIBRARY_PATH=/opt/systemc/lib
 
 # Update system
 RUN apt-get update
 RUN apt-get upgrade -y
+
 # Install dependencies
 RUN apt-get install -y libncurses5-dev autoconf automake perl libtool \
     libmpc-dev libmpfr-dev libgmp-dev gawk bison flex \
@@ -17,7 +19,8 @@ RUN apt-get install -y libncurses5-dev autoconf automake perl libtool \
 RUN wget https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz && \
     tar -xvzf systemc-2.3.3.tar.gz && rm systemc-2.3.3.tar.gz
 RUN cd systemc-2.3.3 && mkdir build && cd build && \ 
-    cmake .. -DCMAKE_CXX_STANDARD=14 && make install
+    cmake .. -DCMAKE_CXX_STANDARD=14 && make install -j2
+
 RUN rm -rf /systemc-2.3.3
 
 # Install SCML library 2.5.0 (failed)
@@ -36,14 +39,13 @@ RUN rm -rf /systemc-2.3.3
 #   1. latest g++ 8.3
 #   2. C++ 14 standard
 #   3. System C 2.3.3 built by CMake (dynamic library .so instead of static library)
-ENV CXX=g++-8
 RUN git clone https://gitlab.larc-nthu.net/rgly/scml.git \
     && mkdir /scml/build \
     && mkdir /opt/scml
 RUN cd /scml && sh /scml/scml_patch.sh
 RUN cd /scml/build \
     && ../configure --prefix=${SCML_HOME} --with-systemc=${SYSTEMC_HOME} \
-    && make install
+    && make install -j2
 RUN rm -rf /scml
 
 # Install Arch C
@@ -57,7 +59,10 @@ RUN mkdir -p ${ARCHC_HOME} && \
     git clone https://github.com/ArchC/ArchC.git ArchC
 RUN cd ArchC && ./autogen.sh && \
     ./configure --prefix=${ARCHC_HOME} --with-systemc=${SYSTEMC_HOME} && \
-    make install && cd / && rm -rf ArchC
+    make install -j2 && cd / && rm -rf ArchC
+
+# For compatibility (to old SystemC builds)
+RUN ln -sf /opt/systemc/lib/ /opt/systemc/lib-linux64
 
 # Cleanup
 RUN apt-get autoremove -y \
