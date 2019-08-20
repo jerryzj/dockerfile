@@ -11,7 +11,7 @@ RUN apt-get update
 RUN apt-get upgrade -y
 
 # Install dependencies
-RUN apt-get install -y libncurses5-dev autoconf automake perl libtool \
+RUN apt-get install -yq libncurses5-dev autoconf automake perl libtool \
     libmpc-dev libmpfr-dev libgmp-dev gawk bison flex \
     texinfo patchutils zlib1g-dev pkg-config -y
 
@@ -29,7 +29,7 @@ RUN rm -rf /systemc-2.3.3
 #    -O scml.tgz && tar -xvzf scml.tgz && rm scml.tgz
 #RUN mkdir /opt/scml && mkdir /scml-2.5.0/build && cd /scml-2.5.0/build \
 #    ../configure --prefix=/opt/scml --with-systemc=/opt/systemc-2.3.3 && \
-#    make -j && make install 
+#    make -j2 && make install 
 #RUN rm -rf /scml-2.5.0
 
 # Install SCML library 2.4.3
@@ -53,17 +53,16 @@ ENV PREFIX="${PREFIX:-/usr/local/lib}"
 ENV ARCHC_VERSION=${ARCHC_VERSION:-2.4.1}
 ENV ARCHC_HOME=${PREFIX}/archc-${ARCHC_VERSION}
 
-RUN echo "ArchC version == ${ARCHC_VERSION}" && \
-    echo "Installation path is ${ARCHC_HOME}"
 RUN mkdir -p ${ARCHC_HOME} && \
     git clone https://github.com/ArchC/ArchC.git ArchC
 RUN cd ArchC && ./autogen.sh && \
     ./configure --prefix=${ARCHC_HOME} --with-systemc=${SYSTEMC_HOME} && \
     make install -j2 && cd / && rm -rf ArchC
 
-# For compatibility (to old SystemC builds)
+# For compatibility (to old SystemC builds & EEWS)
 RUN ln -sf /opt/systemc/lib/ /opt/systemc/lib-linux64
-
+RUN echo 'SYSTEMC_HOME=/opt/systemc' >> /etc/environment && \
+    echo 'SCML_HOME=/opt/scml'>> /etc/environment
 # Cleanup
 RUN apt-get autoremove -y \
     && apt-get autoclean
