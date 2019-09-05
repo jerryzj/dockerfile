@@ -49,20 +49,21 @@ RUN cd /scml/build \
 RUN rm -rf /scml
 
 # Install Arch C
-ENV PREFIX="${PREFIX:-/usr/local/lib}"
-ENV ARCHC_VERSION=${ARCHC_VERSION:-2.4.1}
-ENV ARCHC_HOME=${PREFIX}/archc-${ARCHC_VERSION}
+ENV ARCHC_HOME=/opt/archc-2.4.1
 
 RUN mkdir -p ${ARCHC_HOME} && \
     git clone https://github.com/ArchC/ArchC.git ArchC
 RUN cd ArchC && ./autogen.sh && \
     ./configure --prefix=${ARCHC_HOME} --with-systemc=${SYSTEMC_HOME} && \
     make install -j2 && cd / && rm -rf ArchC
+RUN sed -e 's|PATH="\(.*\)"|PATH="/opt/archc-2.4.1/bin:\1"|g' -i /etc/environment
+ENV PATH=$PATH:/opt/archc-2.4.1/bin
 
 # For compatibility (to old SystemC builds & EEWS)
 RUN ln -sf /opt/systemc/lib/ /opt/systemc/lib-linux64
 RUN echo 'SYSTEMC_HOME=/opt/systemc' >> /etc/environment && \
     echo 'SCML_HOME=/opt/scml'>> /etc/environment
+
 # Cleanup
 RUN apt-get autoremove -y \
     && apt-get autoclean
