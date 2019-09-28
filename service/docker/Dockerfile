@@ -1,4 +1,4 @@
-FROM jerryzj/dev_basic:latest
+FROM jerryzj/systemc_dev:latest
 # You may use other images instead
 
 RUN apt-get update
