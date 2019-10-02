@@ -11,13 +11,13 @@ RUN apt-get update
 RUN apt-get upgrade -y
 
 # Install depedencies
-RUN apt-get install -y autoconf flex
+RUN apt-get install -yq autoconf automake perl flex
 
 # Install System C library
 RUN wget -q https://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.3.tar.gz && \
     tar -xvzf systemc-2.3.3.tar.gz && rm systemc-2.3.3.tar.gz
 RUN cd systemc-2.3.3 && mkdir build && cd build && \ 
-    cmake .. -DCMAKE_CXX_STANDARD=14 && make install -j2
+    cmake .. -DCMAKE_CXX_STANDARD=14 && make install -j4
 
 RUN rm -rf /systemc-2.3.3
 
@@ -43,7 +43,7 @@ RUN git clone https://gitlab.larc-nthu.net/rgly/scml.git \
 RUN cd /scml && sh /scml/scml_patch.sh
 RUN cd /scml/build \
     && ../configure --prefix=${SCML_HOME} --with-systemc=${SYSTEMC_HOME} \
-    && make install -j2
+    && make install -j4
 RUN rm -rf /scml
 
 # Install riscv-llvm 32bit toolchain
