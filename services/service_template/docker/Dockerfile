@@ -1,5 +1,8 @@
-FROM jerryzj/systemc_dev:latest
+FROM jerryzj/dev_basic:latest
 # You may use other images instead
+
+RUN sed -i 's/archive.ubuntu.com/free.nchc.org.tw/g' \
+    /etc/apt/sources.list
 
 RUN apt-get update
 
