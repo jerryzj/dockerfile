@@ -10,10 +10,10 @@ RUN apt-get upgrade -y
 # install SiFive riscv toolchain
 # Note that the SiFive prebuilt toolchain is directly downloaded from 
 # SiFive hosted server, and it may upgrade continuously.
-RUN wget -q https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14.tar.gz && \
-    tar -xvzf riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14.tar.gz && \
-    rm riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14.tar.gz
-RUN mv riscv64-unknown-elf-gcc-8.3.0-2019.08.0-x86_64-linux-ubuntu14 /opt/riscv-toolchain
+RUN wget -q https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz && \
+    tar -xvzf riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz && \
+    rm riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14.tar.gz
+RUN mv riscv64-unknown-elf-gcc-8.3.0-2020.04.1-x86_64-linux-ubuntu14 /opt/riscv-toolchain
 # Set $PATH
 RUN sed -e 's|PATH="\(.*\)"|PATH="/opt/riscv-toolchain/bin:\1"|g' -i /etc/environment
 # Since docker build use sh as default, add ENV in order to build Spike later
