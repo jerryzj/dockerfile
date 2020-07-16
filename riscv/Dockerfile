@@ -37,6 +37,13 @@ RUN cd riscv-isa-sim-1.0.0 && mkdir build && cd build && \
     make && make install
 RUN rm -rf /riscv-isa-sim-1.0.0
 
+# Install RISCV-OVPSim
+RUN wget -q https://github.com/riscv/riscv-ovpsim/archive/v20200708.0.tar.gz && \
+    tar -xvzf v20200708.0.tar.gz && rm v20200708.0.tar.gz
+RUN mv riscv-ovpsim-20200708.0/bin/Linux64/* /usr/local/bin && \
+    mv /usr/local/bin/riscvOVPsim.exe /usr/local/bin/riscvOVPsim
+RUN rm -rf riscv-ovpsim-20200708.0
+
 # Cleanup
 RUN apt-get autoremove -y \
     && apt-get autoclean
