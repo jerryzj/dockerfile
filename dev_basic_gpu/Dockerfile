@@ -19,24 +19,20 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 # Install build tools
 RUN apt-get install -y \
-    cmake \
+    cmake ninja-build \
     build-essential \
     device-tree-compiler
 # Install LLVM toolchain
-RUN apt-get install -y \
-    clang \
-    llvm  \
-    lldb
+RUN apt-get install -y clang
 # Install python3
 RUN apt-get install -y \
     python3 python3-dev \
     python3-pip
 # Install common tools
 RUN apt-get install -y \
-    vim git lftp tmux wget curl p7zip \
+    vim git tmux wget curl p7zip \
     clang-format clang-tidy \
-    gdb valgrind gperf \
-    fish
+    gdb valgrind fish
 # Cleanup
 RUN apt-get autoremove -y\
     && apt-get clean
