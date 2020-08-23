@@ -37,7 +37,7 @@ RUN rm -rf /systemc-2.3.3
 #   1. latest g++ 8.3
 #   2. C++ 14 standard
 #   3. System C 2.3.3 built by CMake (dynamic library .so instead of static library)
-RUN git clone https://gitlab.larc-nthu.net/rgly/scml.git \
+RUN git clone https://github.com/jerryzj/scml.git \
     && mkdir /scml/build \
     && mkdir /opt/scml
 RUN cd /scml && sh /scml/scml_patch.sh
